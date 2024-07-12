@@ -125,7 +125,7 @@ jobs:
           export AIRTABLE_BASE_ID=${{ env.AIRTABLE_BASE_ID }}
           export NOTION_API_TOKEN=${{ env.NOTION_TOKEN}}
           pip install pytest pytest-cov
-          pytest test_main.py --doctest-modules --junitxml=./build/test-results/test_main_results.xml --cov=com --cov-report=xml --cov-report=html
+          pytest test_main.py --doctest-modules --junitxml=./build/test-results/test_main_results.xml
           python -m unittest test_main.py
         
       - name: Publish Test Report
