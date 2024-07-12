@@ -115,7 +115,7 @@ jobs:
       - name: Lint with Ruff
         run: |
           pip install ruff
-          ruff --output-format=github .
+          ruff check . --output-format=github
         continue-on-error: true
 
       - name: Test with unit test
@@ -132,7 +132,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure() # always run even if the previous step fails
         with:
-          report_paths: './build/test-results/test_*.xml'
+          junit_files: './build/test-results/test_*.xml'
 
   container:
     name: Gtihub Packages - Container Build & Publish to registry
