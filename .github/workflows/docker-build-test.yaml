@@ -123,7 +123,7 @@ jobs:
           export AIRTABLE_TOKEN=${{ env.AIRTABLE_TOKEN }}
           export TELEGRAM_TOKEN=${{ env.TELEGRAM_TOKEN }}
           export AIRTABLE_BASE_ID=${{ env.AIRTABLE_BASE_ID }}
-          export NOTION_TOKEN=${{ env.NOTION_TOKEN}}
+          export NOTION_API_TOKEN=${{ env.NOTION_TOKEN}}
           python -m unittest test_main.py
         
       - name: Publish Test Report
