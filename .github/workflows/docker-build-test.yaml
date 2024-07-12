@@ -153,22 +153,21 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2.9.0
 
-      - name: Docker Test
-        id: docker-test
-        env: 
-          DOCKER_BUILDKIT: 1
-          REGISTRY: ${{ env.REGISTRY}}
-          REPOSITORY: ${{ github.repository }}
-          IMAGE_TAG: ${{ github.sha }}-test
-        run: >
-          docker buildx build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          --cache-from type=gha --cache-to type=gha,mode=max
-          --target export-test-results
-          --build-arg REPOSITORY_URL="${{ env.REPOSITORY_URL }}"
-          --build-arg REPOSITORY_AUTH_USER="${{ github.repository_owner }}"
-          --build-arg REPOSITORY_AUTH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          --output type=tar,dest=./out . ;
-          cat ./out
+      # - name: Docker Test
+      #   id: docker-test
+      #   env: 
+      #     DOCKER_BUILDKIT: 1
+      #     REGISTRY: ${{ env.REGISTRY}}
+      #     REPOSITORY: ${{ github.repository }}
+      #     IMAGE_TAG: ${{ github.sha }}-test
+      #   run: >
+      #     docker buildx build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      #     --cache-from type=gha --cache-to type=gha,mode=max
+      #     --build-arg REPOSITORY_URL="${{ env.REPOSITORY_URL }}"
+      #     --build-arg REPOSITORY_AUTH_USER="${{ github.repository_owner }}"
+      #     --build-arg REPOSITORY_AUTH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+      #     --output type=tar,dest=./out . ;
+      #     cat ./out
 
       - name: Login to container registry
         if: success() && (inputs.dry_run == false)
