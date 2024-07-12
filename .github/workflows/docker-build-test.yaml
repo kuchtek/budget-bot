@@ -214,4 +214,4 @@ jobs:
           append_body: true
           body: |
             - Github Packages Container URL: ${{ env.REGISTRY }}/${{ github.repository }}:${{ inputs.release_tag }}
-          token: ${{ GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
