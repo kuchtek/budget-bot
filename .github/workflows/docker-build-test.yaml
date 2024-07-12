@@ -91,6 +91,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      checks: write
     needs: [check]
     if: needs.check.outputs.has_gh_secrets
     env:
