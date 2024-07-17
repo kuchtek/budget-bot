@@ -4,8 +4,6 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from datetime import datetime
 import os
 from pyairtable import Api
-from datetime import datetime
-
 # Notion API configuration
 NOTION_API_TOKEN = os.environ['NOTION_API_TOKEN']
 NOTION_EXPENSES_DATABASE_ID = 'e01498b500854922bde3d422ee7c5ecd'
@@ -205,24 +203,6 @@ def get_budget_from_notion(category, month):
             return results[0]
     return None
 
-# Funkcja do aktualizacji budżetu w Notion
-def update_budget_in_notion(page_id, remaining_budget):
-    url = f"https://api.notion.com/v1/pages/{page_id}"
-    headers = {
-        "Authorization": f"Bearer {NOTION_API_TOKEN}",
-        "Content-Type": "application/json",
-        "Notion-Version": "2022-06-28"
-    }
-    data = {
-        "properties": {
-            "Pozostało": {
-                "number": remaining_budget
-            }
-        }
-    }
-    response = requests.patch(url, json=data, headers=headers)
-    return response.status_code, response.json()
-
 # Funkcja do dodawania budżetu do Notion
 def add_budget_to_notion(category, budget, month):
     url = "https://api.notion.com/v1/pages"
@@ -339,8 +319,7 @@ async def start(update: Update, context: CallbackContext) -> None:
     )
     await update.message.reply_text(start_message)
 
-# Funkcja do ustawiania budżetu
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 
 async def set_budget(update: Update, context: CallbackContext) -> None:
     categories = get_categories_from_notion()
@@ -362,7 +341,6 @@ async def set_budget_callback(update: Update, context: CallbackContext) -> None:
     context.user_data['selected_category'] = category
     await query.edit_message_text(text=f"Wybrana kategoria: {category}. Podaj kwotę budżetu i miesiąc w formacie BUDŻET YYYY-MM (brak daty=aktualny miesiąc)")
 
-from telegram.ext import CallbackQueryHandler
 async def handle_expense_input(update: Update, context: CallbackContext) -> None:
     try:
         text = update.message.text.split(maxsplit=3)
