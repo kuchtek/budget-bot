@@ -23,7 +23,6 @@ repos:
         description: Protect specific branches from direct checkins.
       - id: detect-private-key
         description: Detects the presence of private keys.
-      - id: detect-private-key
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
