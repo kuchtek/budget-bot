@@ -34,6 +34,9 @@ on:
         required: false 
         type: boolean
         default: true
+  
+  schedule:
+    - cron: 0 23 * * 0
 
     secrets:
       registry-username:
