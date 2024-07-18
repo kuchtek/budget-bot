@@ -1,9 +1,10 @@
+---
 name: SAST validation
 
 on:
   pull_request:
   schedule:
-    - cron: 0 23 * * 0
+    cron: 0 23 * * 0
 
 jobs:
   sast:
