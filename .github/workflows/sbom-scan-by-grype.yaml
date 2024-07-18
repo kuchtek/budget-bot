@@ -39,15 +39,15 @@ on:
     - cron: 0 23 * * 0
 
   schedule:
-    cron: 0 23 * * 0
+    - cron: 0 23 * * 0
 
-    secrets:
-      registry-username:
-        description: Username for registry
-        required: true
-      registry-password:
-        description: Password for registry
-        required: true
+  secrets:
+    registry-username:
+      description: Username for registry
+      required: true
+    registry-password:
+      description: Password for registry
+      required: true
 
 jobs:
   scan:
