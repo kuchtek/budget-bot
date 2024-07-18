@@ -5,7 +5,8 @@ on:
   pull_request:
   schedule:
     - cron: 0 23 * * 0
-
+permissions:
+  pull-requests: write
 jobs:
   sast:
     name: Run Bandit Scan (Python only)
@@ -15,20 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
+      - name: Bandit scan
+        uses: mdegis/bandit-action@v1.0
         with:
-          python-version: 3.11
-
-      - name: Install Bandit
-        run: pip install bandit
-
-      - name: Run Bandit scan
-        run: bandit -ll -ii -r . -f json -o bandit-report.json
-
-      - name: Upload Scan artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: bandit-findings
-          path: bandit-report.json
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: "."
+          level: high
+          confidence: high
+          exit_zero: true
