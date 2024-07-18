@@ -1,0 +1,31 @@
+{
+    "version": "0.2",
+    "languageId": "*",
+    "language": "en, en_GB",
+    "words": [
+        "autoupdate",
+        "codeartifact",
+        "codespell",
+        "commitlint",
+        "davidanson",
+        "dbaeumer",
+        "devcontainer",
+        "devcontainers",
+        "dhoeric",
+        "donjayamanne",
+        "dryrun",
+        "esbenp",
+        "githistory",
+        "helloworld",
+        "OIDC",
+        "RESPOSITORY",
+        "ryanluker",
+        "shellcheck",
+        "timonwong"
+    ],
+    "flagWords": [],
+    "ignoreRegExpList": [
+        "^\\$.+",
+        "-D.*="
+    ]
+}
