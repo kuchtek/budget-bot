@@ -11,24 +11,24 @@ jobs:
     name: Run Bandit Scan (Python only)
     runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.11
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.11
 
-    - name: Install Bandit
-      run: pip install bandit
+      - name: Install Bandit
+        run: pip install bandit
 
-    - name: Run Bandit scan
-      run: bandit -ll -ii -r . -f json -o bandit-report.json
+      - name: Run Bandit scan
+        run: bandit -ll -ii -r . -f json -o bandit-report.json
 
-    - name: Upload Scan artifact
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: bandit-findings
-        path: bandit-report.json
+      - name: Upload Scan artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-findings
+          path: bandit-report.json
