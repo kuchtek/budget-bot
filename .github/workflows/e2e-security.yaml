@@ -9,7 +9,7 @@ on:
 jobs:
   sast:
     name: Validate code
-    uses: kuchtek/course-actions/.github/workflows/sast-validation-semgrep.yaml@main
+    uses: kuchtek/course-actions/.github/workflows/sast-validation-semgrep.yaml@master
     with:
       rules: "p/python"
       upload-artifact: true
