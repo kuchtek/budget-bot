@@ -3,24 +3,18 @@ name: SAST validation
 
 on:
   pull_request:
+  workflow_dispatch:
   schedule:
     - cron: 0 23 * * 0
-permissions:
-  pull-requests: write
+
 jobs:
   sast:
-    name: Run Bandit Scan (Python only)
+    name: Validate code
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Bandit scan
-        uses: mdegis/bandit-action@v1.0
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          path: "."
-          level: high
-          confidence: high
-          exit_zero: true
+    uses: kuchtek/course-actions/.github/workflows/sast-validation-semgrep.yaml@master
+    with:
+      rules: "p/python"
+      upload-artifact: true
+      upload-release-assets: false
+      upload-results-github-security: false
