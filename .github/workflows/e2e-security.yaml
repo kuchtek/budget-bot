@@ -9,7 +9,7 @@ jobs:
 
   sast:
     name: Validate code
-    uses: kuchtek/course-actions.github/workflows/sast-validation-semgrep.yaml@master
+    uses: kuchtek/course-actions/github/workflows/sast-validation-semgrep.yaml@master
     with:
       rules: "p/java"
       upload-artifact: true
@@ -18,7 +18,7 @@ jobs:
 
   sca:
     name: Validate Maven dependencies
-    uses: kuchtek/course-actions.github/workflows/sca-validation-trivy.yaml@master
+    uses: kuchtek/course-actions/github/workflows/sca-validation-trivy.yaml@master
     with:
       exit-code: 1 # fail the job if issues are found
       severity: HIGH,CRITICAL
@@ -49,7 +49,7 @@ jobs:
       packages: read
       contents: write
     needs: [get-version]
-    uses: kuchtek/course-actions.github/workflows/image-scan-trivy.yaml@master
+    uses: kuchtek/course-actions/github/workflows/image-scan-trivy.yaml@master
     secrets:
       registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -69,7 +69,7 @@ jobs:
     permissions:
       packages: read
       contents: write
-    uses: kuchtek/course-actions.github/workflows/sbom-scan-grype.yaml@master
+    uses: kuchtek/course-actions/github/workflows/sbom-scan-grype.yaml@master
     secrets:
       registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
