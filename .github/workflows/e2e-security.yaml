@@ -4,12 +4,12 @@ name: Continuous Security Checks
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *' # scan every day at 01:00 AM UTC.
+    - cron: '0 1 * * *'  # scan every day at 01:00 AM UTC.
 
 jobs:
   sast:
     name: Validate code
-    uses: kuchtek/course-actions/.github/workflows/sast-validation-semgrep.yaml@master
+    uses: ./.github/workflows/reusable/sast-validation-semgrep.yaml@master  # changing to local, as course-actions is a private repo, while this is public; more info: https://docs.github.com/en/actions/using-workflows/reusing-workflows#access-to-reusable-workflows
     with:
       rules: "p/python"
       upload-artifact: true
@@ -18,9 +18,9 @@ jobs:
 
   sca:
     name: Validate python dependencies
-    uses: kuchtek/course-actions/.github/workflows/sca-validation-trivy.yaml@master
+    uses: ./.github/workflows/reusable/sca-validation-trivy.yaml@master
     with:
-      exit-code: 1 # fail the job if issues are found
+      exit-code: 1  # fail the job if issues are found
       severity: HIGH,CRITICAL
       ignore-unfixed: true
       format: table
@@ -49,13 +49,13 @@ jobs:
       packages: read
       contents: write
     needs: [get-version]
-    uses: kuchtek/course-actions/.github/workflows/image-scan-trivy.yaml@master
+    uses: ./.github/workflows/image-scan-trivy.yaml@master
     secrets:
       registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
     with:
       image: 'ghcr.io/${{ github.repository }}:${{ needs.get-version.outputs.release_version }}'
-      exit-code: 1 # fail the job if issues are found
+      exit-code: 1  # fail the job if issues are found
       format: table
       severity: HIGH,CRITICAL
       ignore-unfixed: true
@@ -69,14 +69,14 @@ jobs:
     permissions:
       packages: read
       contents: write
-    uses: kuchtek/course-actions/.github/workflows/sbom-scan-grype.yaml@master
+    uses: ./.github/workflows/reusable/sbom-scan-grype.yaml@master
     secrets:
       registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
     with:
       image: 'ghcr.io/${{ github.repository }}:${{ needs.get-version.outputs.release_version }}'
       scan-sbom: true
-      severity: 'high' # minimum vulnerability severity to trigger a failure
+      severity: 'high'  # minimum vulnerability severity to trigger a failure
       upload-artifact: true
       upload-release-assets: false
 
