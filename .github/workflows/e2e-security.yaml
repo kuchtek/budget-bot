@@ -1,3 +1,4 @@
+---
 name: Continuous Security Checks
 
 on:
@@ -6,18 +7,17 @@ on:
     - cron: '0 1 * * *' # scan every day at 01:00 AM UTC.
 
 jobs:
-
   sast:
     name: Validate code
     uses: kuchtek/course-actions/.github/workflows/sast-validation-semgrep.yaml@master
     with:
-      rules: "p/java"
+      rules: "p/python"
       upload-artifact: true
       upload-release-assets: false
       upload-results-github-security: false
 
   sca:
-    name: Validate Maven dependencies
+    name: Validate python dependencies
     uses: kuchtek/course-actions/.github/workflows/sca-validation-trivy.yaml@master
     with:
       exit-code: 1 # fail the job if issues are found
