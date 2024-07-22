@@ -27,6 +27,7 @@ permissions:
   contents: write # for checkout code & release
   packages: write # to publish a package
   pull-requests: write
+  issues: write
 
 
 jobs:
