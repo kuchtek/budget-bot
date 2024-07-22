@@ -36,11 +36,11 @@ jobs:
       image: returntocorp/semgrep:1.38.0
     permissions:
       contents: write
-    with:
-      rules: ${{ inputs.rules || 'p/python'}}
-      upload-artifact: ${{ inputs.upload-artifact || 'true' }}
-      upload-results-github-security: ${{ inputs.upload-results-github-security || 'true' }}
-      upload-release-assets: ${{ inputs.upload-release-assets || 'false' }}
+    env:
+      DEFAULT_RULE: 'p/python'
+      UPLOAD_ARTIFACT: true
+      UPLOAD_RESULTS_TO_GH_SECURITY: true
+      UPLOAD_RELEASE_ASSETS: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
         # fail on blocking finding, pass on internal semgrep errors
         run: semgrep ci --suppress-errors --sarif --output="${{ github.event.repository.name }}-sast-results.sarif"
         env:
-          SEMGREP_RULES: ${{ inputs.rules }} # more at semgrep.dev/explore
+          SEMGREP_RULES: ${{ inputs.rules || env.DEFAULT_RULE }} # more at semgrep.dev/explore
 
       - name: Check if report is empty
         id: check-report
@@ -70,21 +70,21 @@ jobs:
       - name: Upload Test results
         uses: actions/upload-artifact@master
         if: |
-          always() && steps.check-report.outputs.report && ( inputs.upload-artifact == true )
+          always() && steps.check-report.outputs.report && ( ${{ inputs.upload-artifact || env.UPLOAD_ARTIFACT }}== true )
         with:
           name: "${{ github.event.repository.name }}-sast-results.sarif"
           path: "${{ github.event.repository.name }}-sast-results.sarif"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
-        if: always() && steps.check-report.outputs.report && ( inputs.upload-results-github-security == true )
+        if: always() && steps.check-report.outputs.report && ( i${{ inputs.upload-results-github-security || env.UPLOAD_RESULTS_TO_GH_SECURITY }} == true )
         with:
           sarif_file: "${{ github.event.repository.name }}-sast-results.sarif"
 
       - name: Upload SAST results to release - v${{ steps.get-version.outputs.release_version }}
         uses: softprops/action-gh-release@v2
         if: |
-          always() && steps.check-report.outputs.report && ( inputs.upload-release-assets == true )
+          always() && steps.check-report.outputs.report && ( ${{ inputs.upload-release-assets || env.UPLOAD_RELEASE_ASSETS }} == true )
         with:
           tag_name: "v${{ steps.get-version.outputs.release_version }}"
           files: "${{ github.event.repository.name }}-sast-results.sarif"
