@@ -46,8 +46,10 @@ jobs:
   scan-image:
     name: Scan Image
     permissions:
-      packages: read
+      packages: write
       contents: write
+      security-events: write
+
     needs: [get-version]
     uses: ./.github/workflows/image-scan-trivy.yaml
     secrets:
