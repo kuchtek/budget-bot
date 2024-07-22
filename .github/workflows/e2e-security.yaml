@@ -58,7 +58,7 @@ jobs:
     with:
       image: 'ghcr.io/${{ github.repository }}:${{ needs.get-version.outputs.release_version }}'
       exit-code: 1  # fail the job if issues are found
-      format: json
+      format: sarif
       severity: HIGH,CRITICAL
       ignore-unfixed: true
       upload-artifact: true
