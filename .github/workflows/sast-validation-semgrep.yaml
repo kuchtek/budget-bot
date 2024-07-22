@@ -36,6 +36,7 @@ jobs:
       image: returntocorp/semgrep:1.38.0
     permissions:
       contents: write
+      security-events: write
     env:
       DEFAULT_RULE: 'p/python'
       UPLOAD_ARTIFACT: true
