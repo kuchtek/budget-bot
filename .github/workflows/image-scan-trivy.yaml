@@ -62,8 +62,9 @@ jobs:
     name: Scan Container Image - Trivy
     runs-on: ubuntu-latest
     permissions:
-      packages: read
+      packages: write
       contents: write
+      security-events: write
     steps:
 
       - name: Image to scan
