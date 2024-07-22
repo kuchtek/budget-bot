@@ -9,7 +9,7 @@ on:
 jobs:
   sast:
     name: Validate code
-    uses: ./.github/workflows/sast-validation-semgrep.yaml@master
+    uses: ./.github/workflows/sast-validation-semgrep.yaml
     with:
       rules: "p/python"
       upload-artifact: true

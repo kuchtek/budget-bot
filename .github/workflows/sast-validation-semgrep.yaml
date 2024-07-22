@@ -19,15 +19,14 @@ on:
         required: false
         type: boolean
         default: false
-      release-tag:
-        description: Git tag
-        required: false
-        type: string
       upload-release-assets:
         description: Upload release assets
         required: false
         type: boolean
         default: false
+  schedule:
+    - cron: 0 23 * * 0
+
 
 jobs:
   scan:
@@ -37,11 +36,22 @@ jobs:
       image: returntocorp/semgrep:1.38.0
     permissions:
       contents: write
+    with:
+      rules: ${{ inputs.rules || 'p/python'}}
+      upload-artifact: ${{ inputs.upload-artifact || 'true' }}
+      upload-results-github-security: ${{ inputs.upload-results-github-security || 'true' }}
+      upload-release-assets: ${{ inputs.upload-release-assets || 'false' }}
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
-
+      - name: Get latest git tag
+        id: get-version
+        run: |
+          tag=$(git ls-remote --refs --sort="version:refname" --tags $repo | cut -d/ -f3-|tail -n1)
+          version=${tag:1}
+          echo "release_version=$version" >> $GITHUB_OUTPUT;
+        outputs:
+          release_version: ${{ steps.get-version.outputs.release_version }}
       - name: Run Semgrep
         # fail on blocking finding, pass on internal semgrep errors
         run: semgrep ci --suppress-errors --sarif --output="${{ github.event.repository.name }}-sast-results.sarif"
@@ -71,10 +81,10 @@ jobs:
         with:
           sarif_file: "${{ github.event.repository.name }}-sast-results.sarif"
 
-      - name: Upload SAST results to release - v${{ inputs.release-tag }}
+      - name: Upload SAST results to release - v${{ steps.get-version.outputs.release_version }}
         uses: softprops/action-gh-release@v2
         if: |
           always() && steps.check-report.outputs.report && ( inputs.upload-release-assets == true )
         with:
-          tag_name: "v${{ inputs.release-tag }}"
+          tag_name: "v${{ steps.get-version.outputs.release_version }}"
           files: "${{ github.event.repository.name }}-sast-results.sarif"
