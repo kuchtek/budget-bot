@@ -14,7 +14,7 @@ jobs:
       rules: "p/python"
       upload-artifact: true
       upload-release-assets: false
-      upload-results-github-security: false
+      upload-results-github-security: true
 
   sca:
     name: Validate python dependencies
@@ -26,7 +26,7 @@ jobs:
       format: table
       upload-artifact: true
       upload-release-assets: false
-      upload-results-github-security: false
+      upload-results-github-security: true
 
   get-version:
     name: Get latest release
@@ -81,7 +81,7 @@ jobs:
       scan-sbom: true
       severity: 'high'  # minimum vulnerability severity to trigger a failure
       upload-artifact: true
-      upload-release-assets: false
+      upload-release-assets: true
       release-tag: ${{ needs.get-version.outputs.release_version }}
 
   notification:
