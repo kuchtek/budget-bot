@@ -1,0 +1,109 @@
+---
+name: Scan Image with Trivy
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        # 'ghcr.io/${{ github.repository }}:tag
+        description: Image to scan
+        required: true
+        type: string
+      exit-code:
+        description: 1 if you want job to fail when CVEs are found
+        required: false
+        type: string
+        default: '0'
+      severity:
+        description: Comma delimited list of severities to scan for UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+        required: false
+        type: string
+        default: 'HIGH,CRITICAL'
+      format:
+        description: Report format - table, json, sarif
+        required: false
+        type: string
+        default: 'table'
+      ignore-unfixed:
+        description: Ignore unpatched/unfixed vulnerabilities
+        required: false
+        type: boolean
+        default: true
+      upload-artifact:
+        description: Upload artifact to workflow
+        required: false
+        type: boolean
+        default: true
+      upload-results-github-security:
+        description: Upload scan results to GitHub Security tab
+        required: false
+        type: boolean
+        default: false
+      release-tag:
+        description: Git tag
+        required: false
+        type: string
+      upload-release-assets:
+        description: Upload release assets
+        required: false
+        type: boolean
+        default: false
+
+    secrets:
+      registry-username:
+        description: Username for registry
+        required: true
+      registry-password:
+        description: Password for registry
+        required: true
+
+jobs:
+  scan:
+    name: Scan Container Image - Trivy
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: write
+      security-events: write
+    steps:
+
+      - name: Image to scan
+        run: |
+          echo "Image to scan: ${{ inputs.image }}"
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.11.2
+        with:
+          image-ref: ${{ inputs.image }}
+          format: ${{ inputs.format }}  # table, json, sarif
+          exit-code: ${{ inputs.exit-code }}  # 1 or 0. 0 means don't fail the job if issues are found
+          ignore-unfixed: ${{ inputs.ignore-unfixed }}  # Ignore unpatched/unfixed vulnerabilities
+          vuln-type: 'os,library'
+          severity: ${{ inputs.severity }}  # UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          output: "${{ github.event.repository.name }}-image-scan-results.sarif"
+          timeout: 10m0s
+        env:
+          TRIVY_USERNAME: ${{ secrets.registry-username }}
+          TRIVY_PASSWORD: ${{ secrets.registry-password }}
+
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        if: |
+          always() && ( inputs.upload-artifact == true )
+        with:
+          name: "${{ github.event.repository.name }}-image-scan-results.sarif"
+          path: "${{ github.event.repository.name }}-image-scan-results.sarif"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() && ( inputs.upload-results-github-security == true )
+        with:
+          sarif_file: "${{ github.event.repository.name }}-image-scan-results.sarif"
+
+      - name: Upload image scan results to release - v${{ inputs.release-tag }}
+        uses: softprops/action-gh-release@v1
+        if: |
+          always() && ( inputs.upload-release-assets == true )
+        with:
+          tag_name: "v${{ inputs.release-tag }}"
+          files: "${{ github.event.repository.name }}-image-scan-results.sarif"

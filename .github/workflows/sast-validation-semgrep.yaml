@@ -1,0 +1,89 @@
+---
+name: SAST scan with Semgrep
+
+on:
+  workflow_call:
+    inputs:
+      rules:
+        description: Semgrep rules # can be passed after spaces
+        required: false
+        type: string
+        default: 'p/default'
+      upload-artifact:
+        description: Upload artifact to workflow
+        required: false
+        type: boolean
+        default: true
+      upload-results-github-security:
+        description: Upload scan results to GitHub Security tab
+        required: false
+        type: boolean
+        default: false
+      upload-release-assets:
+        description: Upload release assets
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: 0 23 * * 0
+
+
+jobs:
+  scan:
+    name: SAST validation
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep:1.38.0
+    permissions:
+      contents: write
+      security-events: write
+    env:
+      DEFAULT_RULE: 'p/python'
+      UPLOAD_ARTIFACT: true
+      UPLOAD_RESULTS_TO_GH_SECURITY: true
+      UPLOAD_RELEASE_ASSETS: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get latest git tag
+        id: get-version
+        run: |
+          tag=$(git ls-remote --refs --sort="version:refname" --tags $repo | cut -d/ -f3-|tail -n1)
+          version=${tag:1}
+          echo "release_version=$version" >> $GITHUB_OUTPUT;
+      - name: Run Semgrep
+        # fail on blocking finding, pass on internal semgrep errors
+        run: semgrep ci --suppress-errors --sarif --output="${{ github.event.repository.name }}-sast-results.sarif"
+        env:
+          SEMGREP_RULES: ${{ inputs.rules || env.DEFAULT_RULE }} # more at semgrep.dev/explore
+
+      - name: Check if report is empty
+        id: check-report
+        if: |
+          always()
+        run: |
+          if [[ -s "${{ github.event.repository.name }}-sast-results.sarif" ]] ; then
+            echo "report=true" >> $GITHUB_OUTPUT;
+          fi
+
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        if: |
+          always() && steps.check-report.outputs.report && ( ${{ inputs.upload-artifact || env.UPLOAD_ARTIFACT }}== true )
+        with:
+          name: "${{ github.event.repository.name }}-sast-results.sarif"
+          path: "${{ github.event.repository.name }}-sast-results.sarif"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() && steps.check-report.outputs.report && ( i${{ inputs.upload-results-github-security || env.UPLOAD_RESULTS_TO_GH_SECURITY }} == true )
+        with:
+          sarif_file: "${{ github.event.repository.name }}-sast-results.sarif"
+
+      - name: Upload SAST results to release - v${{ steps.get-version.outputs.release_version }}
+        uses: softprops/action-gh-release@v2
+        if: |
+          always() && steps.check-report.outputs.report && ( ${{ inputs.upload-release-assets || env.UPLOAD_RELEASE_ASSETS }} == true )
+        with:
+          tag_name: "v${{ steps.get-version.outputs.release_version }}"
+          files: "${{ github.event.repository.name }}-sast-results.sarif"
