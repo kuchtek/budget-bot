@@ -281,7 +281,7 @@ async def start(update: Update, context: CallbackContext) -> None:
         "/getcategories - Wyświetl dostępne kategorie.\n"
         "/addcategory KATEGORIA - Dodaj nową kategorię.\n\n"
         "Uwaga: Wszystkie kwoty są w PLN. Wydatki i budżety są skorelowane z interwałem miesięcznym."
-        "Wydaj mi komendę a ja będę działać."
+        "Wydaj mi komendę a ja będę działać.."
     )
     await update.message.reply_text(start_message)
 
