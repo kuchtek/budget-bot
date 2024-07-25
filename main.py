@@ -48,6 +48,7 @@ def add_expense_to_airtable(date, category, account, amount, description):
             "Description": description,
         }
     }
+
     response = requests.post(url, headers=headers, json=data)
     return response.status_code, response.json()
 
