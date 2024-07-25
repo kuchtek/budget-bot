@@ -2,6 +2,7 @@
 name: Continuous Security Checks
 
 on:
+  workflow_call:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'  # scan every day at 01:00 AM UTC.
