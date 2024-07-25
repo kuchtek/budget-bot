@@ -308,7 +308,7 @@ async def set_budget_callback(update: Update, context: CallbackContext) -> None:
     category = query.data.split("_")[1]
     context.user_data["selected_category"] = category
     await query.edit_message_text(
-        text=f"Wybrana kategoria: {category}. Podaj kwotę budżetu i miesiąc w formacie BUDŻET YYYY-MM (brak daty=aktualny miesiąc)"
+        text=f"Wybrana kategoria: {category}. Podaj kwotę budżetu i miesiąc w formacie BUDŻET YYYY-MM (brak daty=aktualny miesiąc) "
     )
 
 
