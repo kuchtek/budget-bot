@@ -148,7 +148,6 @@ jobs:
       new_version: ${{ steps.semantic.outputs.new_release_version }}
 
   github-publish:
-    id: github-publish
     name: GitHub Build & Publish - ${{ needs.tag_version.outputs.new_version }}
     needs: [tag_version]
     if: |
