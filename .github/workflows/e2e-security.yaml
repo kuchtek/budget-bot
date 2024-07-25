@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'  # scan every day at 01:00 AM UTC.
+  pull_request:
+
 
 jobs:
   sast:
