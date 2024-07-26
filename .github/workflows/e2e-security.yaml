@@ -71,7 +71,7 @@ jobs:
       upload-artifact: true
       upload-release-assets: true
       upload-results-github-security: true
-      release-tag: ${{ needs.get-version.outputs.release_version }}
+      release-tag: ${{ inputs.version || needs.get-version.outputs.release_version }}'
 
   scan-sbom:
     name: Generate & Scan SBOM
@@ -89,7 +89,7 @@ jobs:
       severity: 'high'  # minimum vulnerability severity to trigger a failure
       upload-artifact: true
       upload-release-assets: true
-      release-tag: ${{ needs.get-version.outputs.release_version }}
+      release-tag: ${{ inputs.version || needs.get-version.outputs.release_version }}'
 
   notification:
     name: Notification
@@ -104,4 +104,5 @@ jobs:
           token: ${{ secrets.TELEGRAM_NOTOKEN }}
           message: |
             Repository: ${{ github.repository }}
+            Release version: ${{ inputs.version || needs.get-version.outputs.release_version }}'
             Security scanning completed; Please find results.
