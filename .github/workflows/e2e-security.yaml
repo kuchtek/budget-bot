@@ -41,7 +41,7 @@ jobs:
         run: |
           tag=$(git ls-remote --refs --sort="version:refname" --tags $repo | cut -d/ -f3-|tail -n1)
           version=${tag:1}
-          echo "release_version=v$version" >> $GITHUB_OUTPUT;
+          echo "release_version=$version" >> $GITHUB_OUTPUT;
     outputs:
       release_version: ${{ steps.get-version.outputs.release_version }}
 
