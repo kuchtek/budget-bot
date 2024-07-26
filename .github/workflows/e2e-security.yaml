@@ -3,6 +3,11 @@ name: Continuous Security Checks
 
 on:
   workflow_call:
+    inputs:
+      version:
+        description: Version to be scanned
+        type: string
+        default: ""
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'  # scan every day at 01:00 AM UTC.
@@ -58,7 +63,7 @@ jobs:
       registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
     with:
-      image: 'ghcr.io/${{ github.repository }}:${{ needs.get-version.outputs.release_version }}'
+      image: 'ghcr.io/${{ github.repository }}:${{ inputs.version || needs.get-version.outputs.release_version }}'
       exit-code: 1  # fail the job if issues are found
       format: sarif
       severity: HIGH,CRITICAL
@@ -79,7 +84,7 @@ jobs:
       registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
     with:
-      image: 'ghcr.io/${{ github.repository }}:${{ needs.get-version.outputs.release_version }}'
+      image: 'ghcr.io/${{ github.repository }}:${{ inputs.version || needs.get-version.outputs.release_version }}'
       scan-sbom: true
       severity: 'high'  # minimum vulnerability severity to trigger a failure
       upload-artifact: true

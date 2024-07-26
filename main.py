@@ -319,7 +319,7 @@ async def handle_expense_input(update: Update, context: CallbackContext) -> None
         text = update.message.text.split(maxsplit=3)
         if len(text) < 4:
             await update.message.reply_text(
-                "Błędny format. Użyj: WYDATEK KWOTA KATEGORIA OPIS; Sprobuj ponownie"
+                "Błędny format. Użyj: WYDATEK KWOTA KATEGORIA OPIS"
             )
             return
 
