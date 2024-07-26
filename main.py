@@ -319,7 +319,7 @@ async def handle_expense_input(update: Update, context: CallbackContext) -> None
         text = update.message.text.split(maxsplit=3)
         if len(text) < 4:
             await update.message.reply_text(
-                "Błędny format. Użyj: WYDATEK KWOTA KATEGORIA OPIS"
+                "Błędny format. Użyj: WYDATEK KWOTA KATEGORIA OPIS; Sprobuj ponownie"
             )
             return
 
@@ -536,7 +536,6 @@ def main() -> None:
     # Zarejestruj handler dla komendy /add
     application.add_handler(CommandHandler("add", add_expense))
 
-    # Zarejestruj handler dla budżetu po wyborze kategorii
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_budget_input)
     )
