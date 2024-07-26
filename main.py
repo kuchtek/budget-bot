@@ -536,7 +536,6 @@ def main() -> None:
     # Zarejestruj handler dla komendy /add
     application.add_handler(CommandHandler("add", add_expense))
 
-    # Zarejestruj handler dla budżetu po wyborze kategorii
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_budget_input)
     )
