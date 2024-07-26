@@ -545,7 +545,6 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(handle_budget_confirmation))
     # Rejestracja funkcji obsługi callback dla wyboru kategorii
     application.add_handler(CallbackQueryHandler(handle_category_choice))
-    # Uruchom bota
     print("Bot ready to receive requests!")
     application.run_polling()
 
