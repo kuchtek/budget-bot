@@ -552,7 +552,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     # Dodaj wydatek
-    date = "2024-05-29"
+    date = "2024-05-30"
     category = "Jedzenie"
     account = "Konto1"
     amount = 50.00
