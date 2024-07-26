@@ -170,4 +170,4 @@ jobs:
     uses: ./.github/workflows/e2e-security.yaml
     secrets: inherit
     with:
-      version: ${{ needs.tag_version.outputs.new_version }}
+      version: ${{ needs.tag_version.outputs.new_release }}
