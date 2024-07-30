@@ -8,6 +8,10 @@ on:
         description: Version to be scanned
         type: string
         default: ""
+      upload_to_release:
+        description: a flag if results should be uploaded to release.
+        type: boolean
+        default: false
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'  # scan every day at 01:00 AM UTC.
@@ -20,7 +24,7 @@ jobs:
     with:
       rules: "p/python"
       upload-artifact: true
-      upload-release-assets: false
+      upload-release-assets: ${{ inputs.upload_to_release }}
       upload-results-github-security: true
 
   sca:
@@ -32,7 +36,7 @@ jobs:
       ignore-unfixed: true
       format: table
       upload-artifact: true
-      upload-release-assets: false
+      upload-release-assets: ${{ inputs.upload_to_release }}
       upload-results-github-security: true
 
   get-version:
@@ -69,7 +73,7 @@ jobs:
       severity: HIGH,CRITICAL
       ignore-unfixed: true
       upload-artifact: true
-      upload-release-assets: true
+      upload-release-assets: ${{ inputs.upload_to_release }}
       upload-results-github-security: true
       release-tag: ${{ inputs.version || needs.get-version.outputs.release_version }}
 
@@ -79,6 +83,7 @@ jobs:
     permissions:
       packages: read
       contents: write
+      security-events: write
     uses: ./.github/workflows/sbom-scan-grype.yaml
     secrets:
       registry-username: ${{ github.actor }}
@@ -88,7 +93,7 @@ jobs:
       scan-sbom: true
       severity: 'high'  # minimum vulnerability severity to trigger a failure
       upload-artifact: true
-      upload-release-assets: true
+      upload-release-assets: ${{ inputs.upload_to_release }}
       release-tag: ${{ inputs.version || needs.get-version.outputs.release_version }}
 
   notification:

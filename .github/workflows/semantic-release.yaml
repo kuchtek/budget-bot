@@ -171,3 +171,4 @@ jobs:
     secrets: inherit
     with:
       version: ${{ needs.tag_version.outputs.new_release }}
+      upload_to_release: true

@@ -48,14 +48,19 @@ on:
         required: false
         type: boolean
         default: false
+      download_artifact:
+        description: Download artifact if local image is scanned
+        type: boolean
+        required: false
+        default: false
 
     secrets:
       registry-username:
         description: Username for registry
-        required: true
+        required: false
       registry-password:
         description: Password for registry
-        required: true
+        required: false
 
 jobs:
   scan:
@@ -71,8 +76,21 @@ jobs:
         run: |
           echo "Image to scan: ${{ inputs.image }}"
 
+      - name: Download artifact
+        if: ${{ inputs.download_artifact == true }}
+        uses: actions/download-artifact@v4
+        with:
+          name: docker_image
+      # - name: Load image
+      #   if: ${{ inputs.download_artifact == true }}
+      #   run: |
+      #     ls -R
+      #     docker load --input image.tar
+      #     docker image ls -a
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.11.2
+        if: ${{ inputs.download_artifact == false }}
         with:
           image-ref: ${{ inputs.image }}
           format: ${{ inputs.format }}  # table, json, sarif
@@ -85,6 +103,24 @@ jobs:
         env:
           TRIVY_USERNAME: ${{ secrets.registry-username }}
           TRIVY_PASSWORD: ${{ secrets.registry-password }}
+      - name: Check files in directory
+        if: ${{ inputs.download_artifact == true }}
+        run: |
+          ls -la
+          echo $pwd
+      - name: Run Trivy vulnerability scanner - Locally
+        uses: aquasecurity/trivy-action@0.11.2
+        if: ${{ inputs.download_artifact == true }}
+        with:
+          # image-ref: ${{ inputs.image }}
+          input: image.tar
+          format: ${{ inputs.format }}  # table, json, sarif
+          exit-code: ${{ inputs.exit-code }}  # 1 or 0. 0 means don't fail the job if issues are found
+          ignore-unfixed: ${{ inputs.ignore-unfixed }}  # Ignore unpatched/unfixed vulnerabilities
+          vuln-type: 'os,library'
+          severity: ${{ inputs.severity }}  # UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          output: "${{ github.event.repository.name }}-image-scan-results.sarif"
+          timeout: 10m0s
 
       - name: Upload Test results
         uses: actions/upload-artifact@master
