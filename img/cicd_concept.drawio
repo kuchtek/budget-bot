@@ -37,31 +37,10 @@
                         <mxPoint x="250" y="300.74" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="10" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="370" width="500" height="210" as="geometry"/>
-                </mxCell>
-                <mxCell id="11" value="Validate SAST" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
-                    <mxGeometry x="250" y="410" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="12" value="E2E Security" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="370" width="60" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="13" value="Validate SCA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
-                    <mxGeometry x="250" y="490" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="14" value="Scan Container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
-                    <mxGeometry x="430" y="410" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="15" value="Generate SBOM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
-                    <mxGeometry x="430" y="490" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="16" value="Send Notification to Telegram" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
-                    <mxGeometry x="600" y="450" width="120" height="60" as="geometry"/>
-                </mxCell>
                 <mxCell id="17" value="Merge PR" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="35" y="660" width="95" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="18" value="" style="endArrow=classic;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="6" target="10" edge="1">
+                <mxCell id="18" value="" style="endArrow=classic;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.008;entryY=0.633;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="6" target="28" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="79.99939244432684" y="359.00228382989985" as="sourcePoint"/>
                         <mxPoint x="194.09" y="359.75" as="targetPoint"/>
@@ -92,7 +71,37 @@
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="135.90939244432684" y="544.5022838298999" as="sourcePoint"/>
                         <mxPoint x="250" y="545.25" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="190" y="540"/>
+                        </Array>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="27" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="240" y="420" width="500" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="27" vertex="1">
+                    <mxGeometry width="500" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Validate SAST" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="27" vertex="1">
+                    <mxGeometry x="10" y="40" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="Validate SCA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="27" vertex="1">
+                    <mxGeometry x="10" y="120" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="Scan Container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="27" vertex="1">
+                    <mxGeometry x="190" y="40" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Generate SBOM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="27" vertex="1">
+                    <mxGeometry x="190" y="120" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="Send Notification to Telegram" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="27" vertex="1">
+                    <mxGeometry x="360" y="80" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="E2E Security" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="27" vertex="1">
+                    <mxGeometry width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="Scan Container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+                    <mxGeometry x="460" y="350" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
