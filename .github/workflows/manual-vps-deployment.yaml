@@ -1,5 +1,5 @@
 ---
-name: Semantic Release
+name: Manual Deployment To VPS
 
 on:
   workflow_dispatch:
