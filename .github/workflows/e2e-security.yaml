@@ -99,7 +99,7 @@ jobs:
   notification:
     name: Notification
     runs-on: ubuntu-latest
-    needs: [sast, sca, scan-image, scan-sbom]
+    needs: [get-version, sast, sca, scan-image, scan-sbom]
     if: always() && contains(join(needs.*.result, ','), 'fail')
     steps:
       - name: send telegram message
@@ -109,5 +109,5 @@ jobs:
           token: ${{ secrets.TELEGRAM_NOTOKEN }}
           message: |
             Repository: ${{ github.repository }}
-            Release version: ${{ inputs.version || steps.get-version.outputs.release_version }}
+            Release version: ${{ inputs.version || needs.get-version.outputs.release_version }}
             Security scanning completed; Please find results.

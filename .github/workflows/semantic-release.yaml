@@ -174,7 +174,7 @@ jobs:
     uses: ./.github/workflows/e2e-security.yaml
     secrets: inherit
     with:
-      version: ${{ needs.tag_version.outputs.new_release }}
+      version: ${{ needs.tag_version.outputs.new_version }}
       upload_to_release: true
 
   deploy-on-selfhosted:
@@ -187,7 +187,7 @@ jobs:
       - name: Pull docker image
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u github.actor --password-stdin
-          export DOCKER_URL="${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ needs.tag_version.outputs.new_release }}"
+          export DOCKER_URL="${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ needs.tag_version.outputs.new_version }}"
           docker pull $DOCKER_URL
           # check if docker container exists
 
