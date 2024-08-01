@@ -24,7 +24,7 @@ jobs:
     with:
       rules: "p/python"
       upload-artifact: true
-      upload-release-assets: ${{ inputs.upload_to_release }}
+      upload-release-assets: ${{ inputs.upload_to_release || false }}
       upload-results-github-security: true
 
   sca:
@@ -36,7 +36,7 @@ jobs:
       ignore-unfixed: true
       format: table
       upload-artifact: true
-      upload-release-assets: ${{ inputs.upload_to_release }}
+      upload-release-assets: ${{ inputs.upload_to_release || false }}
       upload-results-github-security: true
 
   get-version:
@@ -73,7 +73,7 @@ jobs:
       severity: HIGH,CRITICAL
       ignore-unfixed: true
       upload-artifact: true
-      upload-release-assets: ${{ inputs.upload_to_release }}
+      upload-release-assets: ${{ inputs.upload_to_release || false }}
       upload-results-github-security: true
       release-tag: ${{ inputs.version || needs.get-version.outputs.release_version }}
 
@@ -93,7 +93,7 @@ jobs:
       scan-sbom: true
       severity: 'high'  # minimum vulnerability severity to trigger a failure
       upload-artifact: true
-      upload-release-assets: ${{ inputs.upload_to_release }}
+      upload-release-assets: ${{ inputs.upload_to_release || false }}
       release-tag: ${{ inputs.version || needs.get-version.outputs.release_version }}
 
   notification:
