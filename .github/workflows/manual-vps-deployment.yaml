@@ -1,0 +1,99 @@
+---
+name: Semantic Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: |
+          'Version to manually release'
+        required: true
+        type: string
+      dry_run:
+        description: |
+          'Dry run mode build but do not publish'
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write  # required to use OIDC authentication
+  contents: write  # required to checkout the code from the repo and to perform release
+  packages: write  # required to publish to packages
+  pull-requests: write
+  security-events: write
+  issues: write
+  checks: write
+
+env:
+  USER_PATH: "/home/${{ secrets.VPS_USERNAME }}"
+  REGISTRY: ghcr.io
+  REPOSITORY: ${{ github.repository }}
+jobs:
+  check:
+    name: prerequisites checks
+    runs-on: ubuntu-latest
+    outputs:
+      has_gh_secrets: ${{ steps.check-gh-key-secret.outputs.declared }}
+    steps:
+      - name: Check for GitHub Secret availability
+        id: check-gh-key-secret
+        shell: bash
+        run: |
+          if [[ ! -z "${{ secrets.GITHUB_TOKEN }}" ]]; then
+            echo "Token is declared."
+          else
+            echo "GITHUB_TOKEN secret is missing!"
+            exit 1
+          fi
+          if [[ ! -z "${{ secrets.AIRTABLE_TOKEN }}" ]]; then
+            echo "Airtable Token is declared."
+          else
+            echo "Airtable Token secret is missing!"
+            exit 1
+          fi
+          if [[ ! -z "${{ secrets.TELEGRAM_TOKEN }}" ]]; then
+            echo "Telegram Token is declared."
+          else
+            echo "Telegram Token secret is missing!"
+            exit 1
+          fi
+          if [[ ! -z "${{ secrets.NOTION_TOKEN }}" ]]; then
+            echo "Notion Token is declared."
+          else
+            echo "Notion Token secret is missing!"
+            exit 1
+          fi
+          if [[ ! -z "${{ secrets.AIRTABLE_BASE_ID }}" ]]; then
+            echo "Airtable_Base_ID is declared."
+            echo "All secrets are declared"
+            echo "declared=true" >> $GITHUB_OUTPUT;
+          else
+            echo "GITHUB_TOKEN secret is missing!"
+            exit 1
+          fi
+  get-version:
+    name: Get latest release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get latest git tag
+        id: get-version
+        run: |
+          tag=$(git ls-remote --refs --sort="version:refname" --tags $repo | cut -d/ -f3-|tail -n1)
+          version=${tag:1}
+          echo "release_version=$version" >> $GITHUB_OUTPUT;
+    outputs:
+      release_version: ${{ steps.get-version.outputs.release_version }}
+  deploy-on-selfhosted:
+    name: Deploy docker on self hosted
+    runs-on: self-hosted
+    needs: [github-publish]
+    steps:
+      - name: Pull docker image
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u github.actor --password-stdin
+          export DOCKER_URL="${{ env.REGISTRY }}/${{ env.REPOSITORY }}:{{ jobs.get-version.outputs.release_version }}"
+          docker pull $DOCKER_URL
+          cd ${{ env.USER_PATH }}
+          docker run --net=host -e AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }} -e NOTION_API_TOKEN=${{ secrets.NOTION_API_TOKEN }} -e TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} -e AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }} -d $DOCKER_URL
