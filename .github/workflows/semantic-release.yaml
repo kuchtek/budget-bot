@@ -185,6 +185,13 @@ jobs:
       - name: Pull docker image
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u github.actor --password-stdin
-          docker pull ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:{{ jobs.tag_version.outputs.new_version }}
-          cd ${{ env.USER_PATH }}
-          docker run --net=host -e AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }} -e NOTION_API_TOKEN=${{ secrets.NOTION_API_TOKEN }} -e TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} -e AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }} -d ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:{{ jobs.tag_version.outputs.new_version }}
+          export DOCKER_URL="${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ jobs.get-version.outputs.release_version }}"
+          docker pull $DOCKER_URL
+          # check if docker container exists
+
+          if docker ps -f name=${{ env.CONTAINER_NAME }} | grep ${{ env.CONTAINER_NAME }} ; then
+            echo "Removing old container..."
+            docker stop ${{ env.CONTAINER_NAME }}
+            docker rm ${{ env.CONTAINER_NAME }}
+          fi
+          docker run --net=host --restart always --name ${{ env.CONTAINER_NAME }} -e AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }} -e NOTION_API_TOKEN=${{ secrets.NOTION_API_TOKEN }} -e TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} -e AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }} -d $DOCKER_URL

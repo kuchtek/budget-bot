@@ -26,11 +26,14 @@ on:
       - opened
       - ready_for_review
       - synchronize
+    paths:
+      - '**.py'
+      - 'Dockerfile'
 
 permissions:
-  id-token: write # for OIDC auth
-  contents: write # for checkout code & release
-  packages: write # to publish a package
+  id-token: write  # for OIDC auth
+  contents: write  # for checkout code & release
+  packages: write  # to publish a package
   pull-requests: write
   issues: write
 
@@ -136,7 +139,7 @@ jobs:
 
       - name: Publish Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: success() || failure() # always run even if the previous step fails
+        if: success() || failure()  # always run even if the previous step fails
         with:
           junit_files: './build/test-results/test_*.xml'
 
