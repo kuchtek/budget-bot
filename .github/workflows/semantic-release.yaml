@@ -19,7 +19,7 @@ permissions:
   checks: write
 
 env:
-  USER_PATH: "/home/${{ secrets.VPS_USERNAME }}"
+  CONTAINER_NAME: "telegram_bot"
   REGISTRY: ghcr.io
   REPOSITORY: ${{ github.repository }}
 jobs:
@@ -155,7 +155,7 @@ jobs:
 
   github-publish:
     name: GitHub Build & Publish - ${{ needs.tag_version.outputs.new_version }}
-    needs: [tag_version]
+    needs: [check, tag_version]
     if: |
       needs.check.outputs.has_gh_secrets
         && needs.tag_version.outputs.new_release
@@ -167,7 +167,7 @@ jobs:
 
   scan-code-and-image:
     name: Scans image and code and upload results to release
-    needs: [github-publish]
+    needs: [check, tag_version, github-publish]
     if: |
       needs.check.outputs.has_gh_secrets
         && needs.tag_version.outputs.new_release
@@ -181,6 +181,8 @@ jobs:
     name: Deploy docker on self hosted
     runs-on: self-hosted
     needs: [github-publish, tag_version]
+    if: |
+        needs.tag_version.outputs.new_release
     steps:
       - name: Pull docker image
         run: |
